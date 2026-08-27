@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>My Secret 💗</title>
+
+    <link rel="stylesheet" href="style.css" />
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./vendor/three.module.js",
+          "three/addons/controls/OrbitControls.js": "./vendor/OrbitControls.js"
+        }
+      }
+    </script>
+  </head>
+  <!-- COUNTDOWN TRANSITION -->
+
+  <div class="countdown-screen hidden" id="countdownScreen">
+    <div class="countdown-content">
+      <div class="countdown-heart">♥</div>
+
+      <div class="countdown-number" id="countdownNumber">3</div>
+
+      <p>Something special is waiting...</p>
+    </div>
+  </div>
+  <body>
+    <!-- Animated background -->
+    <div class="background-effects">
+      <div class="glow glow-1"></div>
+      <div class="glow glow-2"></div>
+      <div class="glow glow-3"></div>
+
+      <div class="sparkles"></div>
+    </div>
+    <!-- Floating animation layer -->
+    <div id="floatingLayer"></div>
+
+    <!-- Main application -->
+    <main class="app">
+      <!-- PASSWORD SCREEN -->
+      <section class="password-screen" id="passwordScreen">
+        <div class="card">
+          <!-- IMAGE -->
+          <div class="photo-section">
+            <img src="ngocnhuxinhgai.jpg" alt="Cute photo" class="main-photo" />
+          </div>
+
+          <!-- PASSWORD -->
+          <div class="password-section">
+            <div class="heart-icon">♥</div>
+
+            <h1>Nhập mật khẩu</h1>
+
+            <div
+              id="debugBanner"
+              style="
+                display: none;
+                width: 100%;
+                max-width: 320px;
+                margin: 0 0 12px;
+                padding: 8px 10px;
+                border-radius: 10px;
+                background: #3a0015;
+                color: #ffd6e8;
+                font-size: 12px;
+                line-height: 1.4;
+                word-break: break-word;
+                white-space: pre-wrap;
+              "
+            ></div>
+
+            <!-- Password dots -->
+            <div class="password-dots" id="passwordDots">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+
+            <!-- Number pad -->
+            <div class="keypad">
+              <button class="key" data-number="1">1</button>
+              <button class="key" data-number="2">2</button>
+              <button class="key" data-number="3">3</button>
+
+              <button class="key" data-number="4">4</button>
+              <button class="key" data-number="5">5</button>
+              <button class="key" data-number="6">6</button>
+
+              <button class="key" data-number="7">7</button>
+              <button class="key" data-number="8">8</button>
+              <button class="key" data-number="9">9</button>
+
+              <div></div>
+
+              <button class="key" data-number="0">0</button>
+
+              <button class="key delete" id="deleteButton">⌫</button>
+            </div>
+
+            <p class="error-message" id="errorMessage"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECRET CONTENT -->
+      <section class="secret-screen hidden" id="secretScreen">
+        <div class="secret-container">
+          <!-- =================================
+             MAIN PHOTO
+        ================================== -->
+
+          <div class="birthday-photo-wrapper">
+            <div class="photo-frame">
+              <img
+                src="ngocnhubd.jpg"
+                alt="Birthday photo"
+                class="birthday-photo"
+              />
+            </div>
+
+            <div class="birthday-date">🎂 27 August 2026 🎂</div>
+
+            <div class="birthday-title">Happy Birthday NgocNhu iuu 💗</div>
+          </div>
+
+          <!-- =================================
+             MENU
+        ================================== -->
+
+          <div class="secret-menu">
+            <!-- LETTER -->
+
+            <button class="secret-item" data-page="letter">
+              <div class="secret-icon">💌</div>
+
+              <div class="secret-item-content">
+                <h2>Letter</h2>
+
+                <p>A little letter for you</p>
+              </div>
+            </button>
+
+            <!-- MY TAKE CARE -->
+
+            <button class="secret-item" data-page="takecare">
+              <div class="secret-icon">🫶</div>
+
+              <div class="secret-item-content">
+                <h2>My Take Care</h2>
+
+                <p>Things I want you to know</p>
+              </div>
+            </button>
+
+            <!-- GIFT -->
+
+            <button class="secret-item" data-page="gift">
+              <div class="secret-icon">🎁</div>
+
+              <div class="secret-item-content">
+                <h2>Gift</h2>
+
+                <p>A little surprise</p>
+              </div>
+            </button>
+
+            <!-- THE LAST — CAKE -->
+
+            <button class="secret-item" data-page="thelast">
+              <div class="secret-icon">🎂</div>
+
+              <div class="secret-item-content">
+                <h2>The Last</h2>
+
+                <p>The Last Gift</p>
+              </div>
+            </button>
+          </div>
+
+          <!-- LOCK AGAIN -->
+
+          <button id="backButton" class="lock-button">🔒 Lock</button>
+        </div>
+
+        <!-- ============================================
+             LETTER VIEW
+        ============================================ -->
+        <section class="letter-view hidden" id="letterView">
+          <!-- BACK TO MENU -->
+          <button class="letter-back-btn" id="letterBackBtn">← Back</button>
+
+          <!-- ENVELOPE -->
+          <div class="envelope-stage" id="envelopeStage">
+            <div class="envelope" id="envelope">
+              <div class="envelope-flap"></div>
+              <div class="envelope-body">
+                <div class="wax-seal">♡</div>
+              </div>
+              <div class="envelope-hint">Click to open 💌</div>
+            </div>
+          </div>
+
+          <!-- LETTER PAGES -->
+          <div class="letter-stage hidden" id="letterStage">
+            <div class="letter-pages" id="letterPages">
+              <!-- Page 1 -->
+              <article class="letter-page active" data-page="1">
+                <div class="letter-page-inner">
+                  <div class="letter-scrapbook-decor" aria-hidden="true">
+                    <div
+                      class="letter-deco deco-flower flower-left flower-final"
+                    >
+                      ✿
+                    </div>
+                    <img
+                      class="letter-sticker cat-sticker cat-final"
+                      src="cat-sticker.png"
+                      alt="cute cat sticker"
+                    />
+                    <div class="deco-heart heart-right heart-big">♥</div>
+                    <div class="deco-label label-final">Love, always ♡</div>
+                  </div>
+                  <div class="letter-scrapbook-decor" aria-hidden="true">
+                    <div class="letter-deco deco-heart heart-top">♡</div>
+                    <div class="letter-deco deco-flower flower-left">✿</div>
+                    <div
+                      class="letter-deco deco-tape tape-corner tape-pink"
+                    ></div>
+                    <div class="deco-label label-promise">
+                      always with you ♡
+                    </div>
+                  </div>
+                  <div class="letter-scrapbook-decor" aria-hidden="true">
+                    <div class="letter-deco deco-tape tape-corner"></div>
+                    <div class="letter-deco deco-flower flower-right">✿</div>
+                    <div class="deco-heart heart-bottom">♥</div>
+                    <div class="deco-label label-birthday">
+                      Happy Birthday ♡
+                    </div>
+                  </div>
+                  <div class="letter-scrapbook-decor" aria-hidden="true">
+                    <div class="letter-deco deco-heart heart-left">♡</div>
+                    <div
+                      class="letter-deco deco-flower flower-left flower-small"
+                    >
+                      ✿
+                    </div>
+                    <img
+                      class="letter-sticker cat-sticker cat-small"
+                      src="cat-sticker.png"
+                      alt="cute cat sticker"
+                    />
+                    <div class="deco-label label-special">
+                      you are special ♡
+                    </div>
+                  </div>
+                  <div class="letter-scrapbook-decor" aria-hidden="true">
+                    <div class="letter-deco deco-tape tape-top tape-pink"></div>
+                    <div class="letter-deco deco-heart heart-right">♥</div>
+                    <div class="letter-deco deco-flower flower-right">✿</div>
+                    <div class="deco-label label-wish">with love ♡</div>
+                    <div class="deco-sparkles">✦ ✧</div>
+                  </div>
+                  <div class="letter-scrapbook-decor" aria-hidden="true">
+                    <div class="letter-deco deco-tape tape-top"></div>
+                    <div class="letter-deco deco-heart heart-top">♡</div>
+                    <div class="letter-deco deco-flower flower-left">✿</div>
+                    <img
+                      class="letter-sticker cat-sticker cat-one"
+                      src="cat-sticker.png"
+                      alt="cute cat sticker"
+                    />
+                    <div class="deco-label label-for-you">for you ♡</div>
+                  </div>
+                  <div class="letter-title-box">Gửi em yêu 💗</div>
+                  <div class="letter-content">
+                    <div class="letter-salute">Chào NgocNhu iuu,</div>
+                    <p>
+                      Hôm nay là ngày 27/8/2026 - ngày đặc biệt nhất trong năm
+                      2026 này, ngày một người con gái siêu xinh, siêu dễ thương
+                      được sinh ra trên đời 🌸
+                    </p>
+                    <p class="letter-tap-hint">Nhấp vào để tiếp tục →</p>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Page 2 -->
+              <article class="letter-page" data-page="2">
+                <div class="letter-page-inner">
+                  <div class="letter-title-box">Điều anh mong 🌷</div>
+                  <div class="letter-content">
+                    <p>
+                      Thêm một tuổi mới, anh mong rằng những giọt nước mắt của
+                      em nếu có sẽ chỉ là nước mắt của hạnh phúc, và những vất
+                      vả mà em gánh chịu ngoài kia sẽ được bù đắp bằng sự dịu
+                      dàng của thế giới này và của anh. Chúc mừng sinh nhật tình
+                      yêu của anh.
+                    </p>
+                    <p>Cảm ơn vì ta đã gặp nhau ✨</p>
+                    <p class="letter-tap-hint">Nhấp vào để tiếp tục →</p>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Page 3 -->
+              <article class="letter-page" data-page="3">
+                <div class="letter-page-inner">
+                  <div class="letter-title-box">
+                    Những điều anh thích ở em 💫
+                  </div>
+                  <div class="letter-content">
+                    <ul>
+                      <li>Nụ cười tươi xinh của em 😊</li>
+                      <li>Biết suy nghĩ cho người khác 💧</li>
+                      <li>Nhìn vào đâu cũng thấy đáng yêu 🌸</li>
+                      <li>Luôn cố gắng hết mình trong mọi việc ✨</li>
+                    </ul>
+                    <p class="letter-tap-hint">Nhấp vào để tiếp tục →</p>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Page 4 -->
+              <article class="letter-page" data-page="4">
+                <div class="letter-page-inner">
+                  <div class="letter-title-box">Lời chúc sinh nhật 🎂</div>
+                  <div class="letter-content">
+                    <p>
+                      Anh không biết phải chúc gì cả vì những câu chúc xinh đẹp
+                      đối với em có vẻ hơi thừa. Nhưng mà, chúc NgocNhu tuổi mới
+                      luôn tràn đầy niềm vui, luôn được mọi người yêu thương,
+                      luôn luôn xinh đẹp như một bông hoa 🌹
+                    </p>
+                    <p>
+                      Chúc những điều tuyệt vời nhất trên đời này luôn đến với
+                      em.
+                    </p>
+                    <p class="letter-tap-hint">Nhấp vào để tiếp tục →</p>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Page 5 -->
+              <article class="letter-page" data-page="5">
+                <div class="letter-page-inner">
+                  <div class="letter-title-box">Những điều anh hứa 🫶</div>
+                  <div class="letter-content">
+                    <ul>
+                      <li>Luôn bên cạnh, hỗ trợ em bất cứ khi nào cần</li>
+                      <li>Lắng nghe và tâm sự cùng em</li>
+                      <li>
+                        Cùng em trải qua thật nhiều điều thú vị lẫn khó khăn
+                        phía trước
+                      </li>
+                      <li>Luôn giữ cho nụ cười trên môi em không bị mất đi</li>
+                    </ul>
+                    <p class="letter-tap-hint">Nhấp vào để tiếp tục →</p>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Page 6 -->
+              <article class="letter-page" data-page="6">
+                <div class="letter-page-inner">
+                  <div class="letter-title-box">
+                    Một lần nữa, Happy Birthday! 💗
+                  </div>
+                  <div class="letter-content letter-content-final">
+                    <div class="letter-final-heart">💗</div>
+                    <p>
+                      Cảm ơn em đã là một phần thật quan trọng của cuộc đời anh.
+                      Mặc dù anh hơi khô khan nhưng hy vọng rằng lá thư nhỏ này
+                      sẽ làm em mỉm cười một chút hôm nay nhé.
+                    </p>
+                    <p class="letter-signature">— Với tất cả tình cảm ♥</p>
+                    <p class="letter-done-hint">
+                      ✦ Đã đến cuối thư - nhấn back để khám phá tiếp ✦
+                    </p>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <!-- Progress dots -->
+            <div class="letter-progress" id="letterProgress">
+              <span class="dot active"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================
+             TAKE CARE VIEW
+        ============================================ -->
+        <section class="takecare-view hidden" id="takecareView">
+          <button class="takecare-back-btn" id="takecareBackBtn">← Back</button>
+
+          <div class="takecare-header">
+            <div class="takecare-heart">🫶</div>
+            <h1 class="takecare-title">Những Điều Em Cần Nhớ</h1>
+            <p class="takecare-subtitle">
+              Nhấp vào mỗi thiệp để xem lời nhắn của anh nhé 💕
+            </p>
+          </div>
+
+          <div class="takecare-grid" id="takecareGrid">
+            <!-- Card 1 -->
+            <div class="flip-card" tabindex="0" aria-label="Uống đủ nước">
+              <div class="flip-card-inner">
+                <div class="flip-card-front">
+                  <div class="flip-icon">💧</div>
+                  <h3>Uống Đủ Nước</h3>
+                  <p>Mỗi ngày 2 lít nhé</p>
+                </div>
+                <div class="flip-card-back">
+                  <h3>💧 Uống Nước</h3>
+                  <p>
+                    Hãy nhớ uống đủ 2 lít nước mỗi ngày em iuu. Đôi mắt em sẽ
+                    luôn sáng, da cũng hồng hào và sức khỏe cũng tốt hơn rất
+                    nhiều. Đừng để anh phải nhắc nhé em ơi!
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="flip-card" tabindex="0" aria-label="Ngủ sớm">
+              <div class="flip-card-inner">
+                <div class="flip-card-front">
+                  <div class="flip-icon">😴</div>
+                  <h3>Ngủ Sớm</h3>
+                  <p>Trước 12 giờ đêm nha</p>
+                </div>
+                <div class="flip-card-back">
+                  <h3>😴 Ngủ Đủ Giấc</h3>
+                  <p>
+                    Đừng thức quá 12h đêm nhiều quá nhé. Mắt em hoạt động cả
+                    ngày mệt lắm rồi. Ngủ sớm để sáng mai thức dậy với một nụ
+                    cười thật tươi xinh! Hẹn gặp em trong giấc mơ ...zzz.zzz 🌙
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="flip-card" tabindex="0" aria-label="Ăn đủ bữa">
+              <div class="flip-card-inner">
+                <div class="flip-card-front">
+                  <div class="flip-icon">🍚</div>
+                  <h3>Ăn Đủ Bữa</h3>
+                  <p>Đừng bỏ qua bữa sáng</p>
+                </div>
+                <div class="flip-card-back">
+                  <h3>🍚 Ăn Uống Khoa Học</h3>
+                  <p>
+                    Dù có bận đến đâu cũng đừng bỏ qua bữa sáng nhé. Thêm rau
+                    xanh, thêm protein, ăn đủ 3 bữa mỗi ngày. Nếu em lười ăn thì
+                    chắc anh phải tự tay đút em ăn đấy! 🥗
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="flip-card" tabindex="0" aria-label="Vận động">
+              <div class="flip-card-inner">
+                <div class="flip-card-front">
+                  <div class="flip-icon">🏃‍♀️</div>
+                  <h3>Vận Động</h3>
+                  <p>10 phút mỗi sáng thôi</p>
+                </div>
+                <div class="flip-card-back">
+                  <h3>🏃‍♀️ Vóc Dáng Xinh Đẹp</h3>
+                  <p>
+                    Mỗi ngày nếu được hãy dành ra chỉ 10 phút, đi bộ quanh sân
+                    nhà hay tập một vài động tác yoga cũng được lắm đó nha. Anh
+                    muốn em luôn khỏe mạnh, rạng rỡ và xinh đẹp mãi mãi như bây
+                    giờ em nhá!
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="flip-card" tabindex="0" aria-label="Tự tin">
+              <div class="flip-card-inner">
+                <div class="flip-card-front">
+                  <div class="flip-icon">💪</div>
+                  <h3>Tự Tin</h3>
+                  <p>Em thật sự rất tuyệt</p>
+                </div>
+                <div class="flip-card-back">
+                  <h3>💪 Luôn Tự Tin Vào Bản Thân</h3>
+                  <p>
+                    Đừng bao giờ nghi ngờ bản thân em nhé.Anh nghĩ ai cũng có
+                    thế mạnh của riêng mình , và nếu thế mạnh của em là luôn cố
+                    gắng trong mọi việc thì em chỉ cần đủ dũng cảm để đương đầu
+                    . Cứ tự tin đối mặt, bởi vì bên cạnh vẫn có anh - người luôn
+                    tin tưởng em! ✨
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="flip-card" tabindex="0" aria-label="Gọi anh khi mệt">
+              <div class="flip-card-inner">
+                <div class="flip-card-front">
+                  <div class="flip-icon">🤗</div>
+                  <h3>Khi Mệt</h3>
+                  <p>Gọi anh, luôn có mặt</p>
+                </div>
+                <div class="flip-card-back">
+                  <h3>🤗 Anh Luôn Lắng Nghe</h3>
+                  <p>
+                    Khi mà em cảm thấy mệt mỏi, bế tắc hay chỉ đơn giản là muốn
+                    tâm sự một chút hay là nhớ anh gì đó, đừng ngại mà gọi cho
+                    anh nhé. Anh sẽ nghe em kể mãi cũng được, không chán đâu.
+                    Yêu iemm 💗
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 7 -->
+            <div class="flip-card" tabindex="0" aria-label="Khi buồn">
+              <div class="flip-card-inner">
+                <div class="flip-card-front">
+                  <div class="flip-icon">🌧️</div>
+                  <h3>Khi Buồn</h3>
+                  <p>Công Chúa Mít Ướt</p>
+                </div>
+                <div class="flip-card-back">
+                  <h3>🌧️ Nước Mắt Của Em</h3>
+                  <p>
+                    Anh biết em rất dễ bị tác động bởi những lời nói tiêu cực.
+                    Nếu em buồn, đừng chịu đựng một mình. Hãy nhắn anh, anh
+                    phóng qua liền!
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 8 -->
+            <div class="flip-card" tabindex="0" aria-label="Anh luôn ở đây">
+              <div class="flip-card-inner">
+                <div class="flip-card-front">
+                  <div class="flip-icon">💗</div>
+                  <h3>Lời Cuối</h3>
+                  <p>Anh luôn ở bên em</p>
+                </div>
+                <div class="flip-card-back">
+                  <h3>💗 Anh Luôn Ở Bên Em</h3>
+                  <p>
+                    Nhắc lại lần cuối hong biết nãy giờ đủ 3 lần chưa ta? Bất kể
+                    chuyện gì xảy ra, có lớn bé thế nào đi nữa thì hãy luôn nhớ
+                    rằng anh luôn đứng ngay bên cạnh em, cùng em chia mọi niềm
+                    vui, mọi nỗi buồn. Cảm ơn em vì đã chấp nhận cho anh bước
+                    vào cuộc đời màu hồng của em . Luv u Foreverr 🫶
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================
+             THE LAST VIEW — HELLO KITTY CAKE
+        ============================================ -->
+        <section class="thelast-view hidden" id="thelastView">
+          <button class="thelast-back-btn" id="thelastBackBtn">← Back</button>
+
+          <div class="thelast-hint hidden" id="thelastHint"></div>
+
+          <!-- Cake stage -->
+          <div class="thelast-stage" id="thelastStage">
+            <!-- ---------- HELLO KITTY CAKE ---------- -->
+            <div class="cake-wrap" id="cakeWrap">
+              <div class="cake" id="cake">
+                <!-- Ears -->
+                <div class="cake-ear cake-ear-left"></div>
+                <div class="cake-ear cake-ear-right"></div>
+                <!-- Bow -->
+                <div class="cake-bow">
+                  <div class="cake-bow-loop cake-bow-left"></div>
+                  <div class="cake-bow-loop cake-bow-right"></div>
+                  <div class="cake-bow-knot"></div>
+                </div>
+                <!-- Top frosting whipped cream swirls -->
+                <div class="cream-ring">
+                  <span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span>
+                </div>
+                <!-- Frosting drips -->
+                <div class="drips">
+                  <span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span>
+                </div>
+                <!-- Eyes + nose + whiskers -->
+                <div class="kitty-face">
+                  <div class="k-eye k-eye-left"></div>
+                  <div class="k-eye k-eye-right"></div>
+                  <div class="k-nose"></div>
+                  <div class="k-mouth"></div>
+                  <div class="k-whisk k-whisk-l1"></div>
+                  <div class="k-whisk k-whisk-l2"></div>
+                  <div class="k-whisk k-whisk-r1"></div>
+                  <div class="k-whisk k-whisk-r2"></div>
+                </div>
+                <!-- Candle -->
+                <div class="candle" id="candle">
+                  <div class="candle-body">
+                    <span></span><span></span><span></span>
+                  </div>
+                  <div class="candle-wick"></div>
+                  <div class="candle-flame" id="candleFlame">
+                    <div class="flame-outer"></div>
+                    <div class="flame-inner"></div>
+                    <div class="flame-glow"></div>
+                  </div>
+                  <div class="candle-smoke" id="candleSmoke">
+                    <span class="smoke s1"></span>
+                    <span class="smoke s2"></span>
+                    <span class="smoke s3"></span>
+                  </div>
+                </div>
+                <!-- Bottom cake tiers -->
+                <div class="cake-tier cake-tier-top"></div>
+                <div class="cake-tier cake-tier-bottom"></div>
+                <!-- Plate -->
+                <div class="cake-plate"></div>
+              </div>
+              <!-- Slice piece (appears after cut) -->
+              <div class="cake-slice" id="cakeSlice"></div>
+            </div>
+
+            <!-- Knife -->
+            <div class="cake-knife hidden" id="cakeKnife">
+              <div class="knife-blade"></div>
+              <div class="knife-handle"></div>
+            </div>
+
+            <!-- Swipe guide cut line -->
+            <div class="cut-guide hidden" id="cutGuide"></div>
+          </div>
+
+          <!-- Final popup after cut (kept for compatibility, not auto-shown anymore) -->
+          <div class="thelast-modal hidden" id="thelastModal">
+            <div class="thelast-card">
+              <div class="thelast-heart">💗</div>
+              <h1 class="thelast-title">Happy Birthday NgocNhu!</h1>
+              <p class="thelast-line">
+                Chúc mừng sinh nhật lần thứ này và còn rất nhiều lần sau nữa
+              </p>
+              <p class="thelast-line">
+                Dù thời gian có trôi qua thế nào đi nữa
+              </p>
+              <p class="thelast-line">
+                Hy vọng rằng em sẽ luôn hạnh phúc như bây giờ
+              </p>
+              <p class="thelast-line">Luôn xinh đẹp, luôn được yêu thương 💝</p>
+              <p class="thelast-line last-line">
+                Anh yêu em nhiều, mãi bên nhau nhá 💕
+              </p>
+              <button class="thelast-close" id="thelastClose">
+                Cảm ơn anh 💗
+              </button>
+            </div>
+          </div>
+
+          <!-- Fireworks canvas -->
+          <canvas class="fireworks-canvas hidden" id="fireworksCanvas"></canvas>
+
+          <!-- Final message after fireworks -->
+          <div class="thelast-final hidden" id="thelastFinal">
+            <div class="thelast-final-inner">
+              <div class="thelast-final-hearts">
+                <span>💗</span><span>💝</span><span>💖</span>
+              </div>
+              <h1 class="thelast-final-title">
+                Happy Birthday,<br />Ngọc Như 💕
+              </h1>
+              <p class="thelast-final-line">
+                Chúc em tuổi mới thật nhiều niềm vui
+              </p>
+              <p class="thelast-final-line">
+                Luôn xinh đẹp, luôn được yêu thương
+              </p>
+              <p class="thelast-final-line">Và mãi iu anh nhaa 🫶</p>
+              <p class="thelast-final-sign">— From My Love —</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================
+             GIFT VIEW
+        ============================================ -->
+        <section class="gift-view hidden" id="giftView">
+          <button class="gift-back-btn" id="giftBackBtn">← Back</button>
+          <div class="gift-hint hidden" id="giftHint">
+            ✦ Kéo để xoay · Click ảnh để xem lời chúc ✦
+          </div>
+
+          <!-- GALAXY LANDING SCREEN -->
+          <div class="galaxy-landing" id="galaxyLanding">
+            <div class="galaxy-landing-card">
+              <div class="galaxy-landing-heart">💗</div>
+              <h1 class="galaxy-landing-title">HAPPY BIRTHDAY</h1>
+              <p class="galaxy-landing-sub">Ngọc Như iuu ✨</p>
+              <p class="galaxy-landing-desc">
+                Em có muốn biết vị trí của mình trong tim anh không?...
+              </p>
+              <button class="galaxy-landing-btn" id="galaxyEnterBtn">
+                CÓ ✦
+              </button>
+            </div>
+          </div>
+
+          <!-- WISH MODAL -->
+          <div class="galaxy-wish-modal" id="galaxyWishModal">
+            <div class="galaxy-wish-card">
+              <button class="galaxy-wish-close" id="galaxyWishClose">
+                &times;
+              </button>
+              <div class="galaxy-wish-img-wrap">
+                <img
+                  id="galaxyWishImg"
+                  class="galaxy-wish-img"
+                  src=""
+                  alt="Kỷ niệm"
+                />
+              </div>
+              <h2 id="galaxyWishTitle" class="galaxy-wish-title"></h2>
+              <p id="galaxyWishText" class="galaxy-wish-text"></p>
+              <button class="galaxy-wish-ok" id="galaxyWishOk">
+                Cảm ơn 💗
+              </button>
+            </div>
+          </div>
+
+          <canvas class="gift-canvas" id="giftCanvas"></canvas>
+        </section>
+      </section>
+    </main>
+    <audio id="tickSound" src="music/tick.mp3" preload="auto"></audio>
+
+    <audio
+      id="backgroundMusic"
+      src="music/birthday.mp3"
+      loop
+      preload="auto"
+    ></audio>
+
+    <script src="script.js"></script>
+    <script
+      type="module"
+      src="gift-loader.js"
+      onerror="
+        (function (e) {
+          var proto = window.location.protocol;
+          var viaHttp = proto === 'http:' || proto === 'https:';
+          var why = '';
+          if (!viaHttp) {
+            why += '❌ BẠN MỞ BẰNG file://  → TRÌNH DUYỆT CHẶN MODULE LUÔN.\\n';
+            why += '   CÁCH SỬA (bắt buộc cho Gift 3D):\\n';
+            why += '     1. Mở PowerShell vào thư mục project\\n';
+            why +=
+              '     2. Gõ:  powershell -ExecutionPolicy Bypass -File _server.ps1\\n';
+            why += '     3. Mở trình duyệt:  http://localhost:8080\\n';
+            why += '   (Password + Letter vẫn chạy OK ngay cả file://)\\n';
+          } else {
+            why += '⚠ Đã chạy qua HTTP nhưng gift-loader.js VẪN FAIL.\\n';
+            why += '   Nguyên nhân khả dĩ (thử theo thứ tự):\\n';
+            why += '     1. Cache cũ → ấn Ctrl+Shift+R HARD REFRESH.\\n';
+            why +=
+              '     2. File vendor/three.module.js hoặc vendor/OrbitControls.js BỊ THIẾU\\n';
+            why +=
+              '        (Kiểm tra vendor/ có 2 file đó với kích thước > 10KB không)\\n';
+            why +=
+              '     3. Lỗi cú pháp trong gift-loader.js / gift3d.js → mở F12 → Console xem lỗi ĐỎ.\\n';
+          }
+          var b = document.getElementById('debugBanner');
+          if (!b) {
+            b = document.createElement('div');
+            b.id = 'debugBanner';
+            b.style.cssText =
+              'position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:99999;max-width:560px;width:92%;padding:10px 14px;border-radius:12px;background:#3a0015;color:#ffd6e8;font-size:12px;line-height:1.5;word-break:break-word;white-space:pre-wrap;font-family:system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.35)';
+            document.body.appendChild(b);
+          }
+          b.style.display = 'block';
+          b.style.background = '#3a0015';
+          b.style.color = '#ffd6e8';
+          b.textContent = '🎁 GIFT MODULE LOAD THẤT BẠI:\\n\\n' + why;
+          console.error(
+            '[gift-loader module load error]',
+            e,
+            ' protocol=',
+            proto,
+          );
+        })(event)
+      "
+    ></script>
+  </body>
+</html>
