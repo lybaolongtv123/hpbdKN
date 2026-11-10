@@ -4,14 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>My Secret 💗</title>
+    <title>Your Birthday 💗</title>
 
     <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
 
     <script type="importmap">
       {
         "imports": {
           "three": "./vendor/three.module.js",
+          "three/addons/": "./vendor/addons/",
           "three/addons/controls/OrbitControls.js": "./vendor/OrbitControls.js"
         }
       }
@@ -45,16 +52,184 @@
       <!-- PASSWORD SCREEN -->
       <section class="password-screen" id="passwordScreen">
         <div class="card">
-          <!-- IMAGE -->
-          <div class="photo-section">
-            <img src="ngocnhuxinhgai.jpg" alt="Cute photo" class="main-photo" />
-          </div>
-
-          <!-- PASSWORD -->
+          <!-- ROYAL GLASS KEYPAD PANEL -->
           <div class="password-section">
-            <div class="heart-icon">♥</div>
+            <!-- Biểu tượng Scorpio (Cung Bọ Cạp) màu hồng phát sáng rực rỡ -->
+            <div class="scorpio-ornament" aria-label="Scorpio Zodiac Symbol">
+              <svg
+                viewBox="0 0 120 75"
+                width="88"
+                height="55"
+                class="scorpio-svg"
+              >
+                <defs>
+                  <!-- Gradient màu hồng neon ngọc bích -->
+                  <linearGradient
+                    id="scorpioPinkGrad"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="100%"
+                  >
+                    <stop offset="0%" stop-color="#ffffff" />
+                    <stop offset="25%" stop-color="#ffb6db" />
+                    <stop offset="65%" stop-color="#ff2d87" />
+                    <stop offset="100%" stop-color="#c2185b" />
+                  </linearGradient>
+                  <!-- Gradient phát sáng rực rỡ -->
+                  <linearGradient
+                    id="scorpioGlowGrad"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="100%"
+                  >
+                    <stop offset="0%" stop-color="#ffffff" />
+                    <stop offset="40%" stop-color="#ff69b4" />
+                    <stop offset="100%" stop-color="#ff1493" />
+                  </linearGradient>
+                  <filter
+                    id="scorpioGlow"
+                    x="-30%"
+                    y="-30%"
+                    width="160%"
+                    height="160%"
+                  >
+                    <feGaussianBlur stdDeviation="3.2" result="glow" />
+                    <feComposite
+                      in="SourceGraphic"
+                      in2="glow"
+                      operator="over"
+                    />
+                  </filter>
+                  <filter
+                    id="pinkSparkleGlow"
+                    x="-40%"
+                    y="-40%"
+                    width="180%"
+                    height="180%"
+                  >
+                    <feGaussianBlur stdDeviation="2.5" result="blur" />
+                    <feComposite
+                      in="SourceGraphic"
+                      in2="blur"
+                      operator="over"
+                    />
+                  </filter>
+                </defs>
 
-            <h1>Nhập mật khẩu</h1>
+                <!-- Vầng hào quang tròn pha lê hồng -->
+                <circle
+                  cx="60"
+                  cy="38"
+                  r="29"
+                  fill="rgba(255, 60, 140, 0.2)"
+                  filter="url(#scorpioGlow)"
+                />
+                <circle
+                  cx="60"
+                  cy="38"
+                  r="24"
+                  fill="none"
+                  stroke="url(#scorpioPinkGrad)"
+                  stroke-width="1.8"
+                  stroke-dasharray="2 3"
+                  opacity="0.85"
+                />
+
+                <!-- Biểu tượng Bọ Cạp Scorpio (♏) thanh thoát vương giả -->
+                <g filter="url(#scorpioGlow)">
+                  <!-- 3 vòm chữ M và đuôi cong vút -->
+                  <path
+                    d="M 43 49 L 43 31 C 43 25.5 47 23.5 50.5 25.5 C 54 27.5 54 32.5 54 48 L 54 31 C 54 25.5 58 23.5 61.5 25.5 C 65 27.5 65 32.5 65 48 L 65 31 C 65 25.5 69.5 23.5 73.5 25.5 C 77.5 27.5 77.5 33 77.5 45 C 77.5 52 83.5 52.5 87 47 L 91.5 41"
+                    fill="none"
+                    stroke="url(#scorpioGlowGrad)"
+                    stroke-width="3.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <!-- Đầu mũi tên đuôi Bọ Cạp -->
+                  <path
+                    d="M 85 40 L 92.5 40.5 L 92 48"
+                    fill="none"
+                    stroke="url(#scorpioGlowGrad)"
+                    stroke-width="3.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </g>
+
+                <!-- Ngôi sao tinh tú lấp lánh trên đỉnh hào quang -->
+                <polygon
+                  points="60,5 62.5,10.5 68,12 62.5,13.5 60,19 57.5,13.5 52,12 57.5,10.5"
+                  fill="#ffffff"
+                  filter="url(#pinkSparkleGlow)"
+                />
+                <circle cx="60" cy="12" r="2.2" fill="#ff4088" />
+
+                <!-- Ngôi sao nhỏ cánh bên trái -->
+                <polygon
+                  points="33,22 34.5,24.5 37.5,25.5 34.5,26.5 33,29 31.5,26.5 28.5,25.5 31.5,24.5"
+                  fill="#ffffff"
+                  opacity="0.9"
+                  filter="url(#pinkSparkleGlow)"
+                />
+                <!-- Ngôi sao nhỏ cánh bên phải -->
+                <polygon
+                  points="89,17 90.5,19.5 93.5,20.5 90.5,21.5 89,24 87.5,21.5 84.5,20.5 87.5,19.5"
+                  fill="#ffffff"
+                  opacity="0.9"
+                  filter="url(#pinkSparkleGlow)"
+                />
+
+                <!-- Hạt kim cương phát quang -->
+                <circle cx="43" cy="49" r="2.2" fill="#ffffff" />
+                <circle
+                  cx="92.5"
+                  cy="40.5"
+                  r="2.5"
+                  fill="#ffffff"
+                  filter="drop-shadow(0 0 5px #ff2d87)"
+                />
+              </svg>
+            </div>
+
+            <!-- Icon ổ khóa phát sáng trắng -->
+            <div class="padlock-icon">
+              <svg
+                viewBox="0 0 24 24"
+                width="30"
+                height="30"
+                class="padlock-svg"
+              >
+                <path
+                  d="M7 10V7a5 5 0 0 1 10 0v3"
+                  fill="none"
+                  stroke="#ffffff"
+                  stroke-width="2.6"
+                  stroke-linecap="round"
+                />
+                <rect
+                  x="4"
+                  y="10"
+                  width="16"
+                  height="12"
+                  rx="3.5"
+                  fill="#ffffff"
+                />
+                <circle cx="12" cy="15" r="1.6" fill="#e95d99" />
+                <polygon
+                  points="11,15 13,15 12.5,18.5 11.5,18.5"
+                  fill="#e95d99"
+                />
+              </svg>
+            </div>
+
+            <!-- Dòng chữ tiêu đề giống hệt mẫu -->
+            <h1 class="lock-title">
+              Nhập mật khẩu để<br />
+              <span>mở món quà đặc biệt ♡</span>
+            </h1>
 
             <div
               id="debugBanner"
@@ -74,7 +249,7 @@
               "
             ></div>
 
-            <!-- Password dots -->
+            <!-- 4 Vòng tròn mật mã -->
             <div class="password-dots" id="passwordDots">
               <span></span>
               <span></span>
@@ -82,7 +257,7 @@
               <span></span>
             </div>
 
-            <!-- Number pad -->
+            <!-- Bàn phím số bong bóng thủy tinh phát sáng -->
             <div class="keypad">
               <button class="key" data-number="1">1</button>
               <button class="key" data-number="2">2</button>
@@ -96,11 +271,28 @@
               <button class="key" data-number="8">8</button>
               <button class="key" data-number="9">9</button>
 
-              <div></div>
+              <div class="key-empty"></div>
 
               <button class="key" data-number="0">0</button>
 
-              <button class="key delete" id="deleteButton">⌫</button>
+              <button class="key delete" id="deleteButton">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="22"
+                  height="22"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"
+                  ></path>
+                  <line x1="18" y1="9" x2="12" y2="15"></line>
+                  <line x1="12" y1="9" x2="18" y2="15"></line>
+                </svg>
+              </button>
             </div>
 
             <p class="error-message" id="errorMessage"></p>
@@ -116,17 +308,34 @@
         ================================== -->
 
           <div class="birthday-photo-wrapper">
-            <div class="photo-frame">
-              <img
-                src="ngocnhubd.jpg"
-                alt="Birthday photo"
-                class="birthday-photo"
-              />
+            <div class="scorpio-frame">
+              <div class="scorpio-halo" aria-hidden="true"></div>
+              <div class="scorpio-ring" aria-hidden="true"></div>
+              <div class="scorpio-stars" aria-hidden="true">
+                <span class="star"></span>
+                <span class="star"></span>
+                <span class="star"></span>
+                <span class="star"></span>
+                <span class="star"></span>
+                <span class="star"></span>
+                <span class="star"></span>
+                <span class="star"></span>
+              </div>
+              <div class="photo-frame">
+                <img
+                  src="source_img/main_screen.jpg"
+                  alt="Birthday photo"
+                  class="birthday-photo"
+                />
+              </div>
+              <div class="scorpio-badge" aria-hidden="true">♏</div>
             </div>
 
-            <div class="birthday-date">🎂 27 August 2026 🎂</div>
+            <div class="birthday-date">🎂 09 November 2026 🎂</div>
 
-            <div class="birthday-title">Happy Birthday NgocNhu iuu 💗</div>
+            <div class="birthday-title">Happy Birthday Kim Ngân 🎂</div>
+
+            <div class="scorpio-caption">♏ Scorpio · Bọ Cạp ♏</div>
           </div>
 
           <!-- =================================
@@ -143,18 +352,6 @@
                 <h2>Letter</h2>
 
                 <p>A little letter for you</p>
-              </div>
-            </button>
-
-            <!-- MY TAKE CARE -->
-
-            <button class="secret-item" data-page="takecare">
-              <div class="secret-icon">🫶</div>
-
-              <div class="secret-item-content">
-                <h2>My Take Care</h2>
-
-                <p>Things I want you to know</p>
               </div>
             </button>
 
@@ -278,13 +475,13 @@
                     />
                     <div class="deco-label label-for-you">for you ♡</div>
                   </div>
-                  <div class="letter-title-box">Gửi em yêu 💗</div>
+                  <div class="letter-title-box">Dear KimNgan</div>
                   <div class="letter-content">
-                    <div class="letter-salute">Chào NgocNhu iuu,</div>
+                    <div class="letter-salute">Chào chị,</div>
                     <p>
-                      Hôm nay là ngày 27/8/2026 - ngày đặc biệt nhất trong năm
-                      2026 này, ngày một người con gái siêu xinh, siêu dễ thương
-                      được sinh ra trên đời 🌸
+                      Hôm nay là ngày 09/11/2026(có thể là đã qua vài hôm :>) -
+                      - một ngày rất quan trọng, ngày một người con gái siêu
+                      xinh, siêu dễ thương được sinh ra trên đời 🌸
                     </p>
                     <p class="letter-tap-hint">Nhấp vào để tiếp tục →</p>
                   </div>
@@ -294,16 +491,14 @@
               <!-- Page 2 -->
               <article class="letter-page" data-page="2">
                 <div class="letter-page-inner">
-                  <div class="letter-title-box">Điều anh mong 🌷</div>
+                  <div class="letter-title-box">I want to tell you 🌷</div>
                   <div class="letter-content">
                     <p>
-                      Thêm một tuổi mới, anh mong rằng những giọt nước mắt của
-                      em nếu có sẽ chỉ là nước mắt của hạnh phúc, và những vất
-                      vả mà em gánh chịu ngoài kia sẽ được bù đắp bằng sự dịu
-                      dàng của thế giới này và của anh. Chúc mừng sinh nhật tình
-                      yêu của anh.
+                      Thêm một tuổi mới, em chúc cho chị sẽ luôn vui vẻ, hạnh
+                      phúc. Thành công trong công việc sự nghiệp tương lai. Và
+                      cuối cùng là sẽ được sống một cuộc đời mà chị thật sự mơ
+                      ước. Happy Birthday!!
                     </p>
-                    <p>Cảm ơn vì ta đã gặp nhau ✨</p>
                     <p class="letter-tap-hint">Nhấp vào để tiếp tục →</p>
                   </div>
                 </div>
@@ -312,14 +507,12 @@
               <!-- Page 3 -->
               <article class="letter-page" data-page="3">
                 <div class="letter-page-inner">
-                  <div class="letter-title-box">
-                    Những điều anh thích ở em 💫
-                  </div>
+                  <div class="letter-title-box">My thoughts about you 💫</div>
                   <div class="letter-content">
                     <ul>
-                      <li>Nụ cười tươi xinh của em 😊</li>
-                      <li>Biết suy nghĩ cho người khác 💧</li>
-                      <li>Nhìn vào đâu cũng thấy đáng yêu 🌸</li>
+                      <li>Tinh thần mạnh mẽ 😊</li>
+                      <li>Biết suy nghĩ cho người khác 🌸</li>
+                      <li>Chịu khó học hỏi💧</li>
                       <li>Luôn cố gắng hết mình trong mọi việc ✨</li>
                     </ul>
                     <p class="letter-tap-hint">Nhấp vào để tiếp tục →</p>
@@ -330,56 +523,16 @@
               <!-- Page 4 -->
               <article class="letter-page" data-page="4">
                 <div class="letter-page-inner">
-                  <div class="letter-title-box">Lời chúc sinh nhật 🎂</div>
-                  <div class="letter-content">
-                    <p>
-                      Anh không biết phải chúc gì cả vì những câu chúc xinh đẹp
-                      đối với em có vẻ hơi thừa. Nhưng mà, chúc NgocNhu tuổi mới
-                      luôn tràn đầy niềm vui, luôn được mọi người yêu thương,
-                      luôn luôn xinh đẹp như một bông hoa 🌹
-                    </p>
-                    <p>
-                      Chúc những điều tuyệt vời nhất trên đời này luôn đến với
-                      em.
-                    </p>
-                    <p class="letter-tap-hint">Nhấp vào để tiếp tục →</p>
-                  </div>
-                </div>
-              </article>
-
-              <!-- Page 5 -->
-              <article class="letter-page" data-page="5">
-                <div class="letter-page-inner">
-                  <div class="letter-title-box">Những điều anh hứa 🫶</div>
-                  <div class="letter-content">
-                    <ul>
-                      <li>Luôn bên cạnh, hỗ trợ em bất cứ khi nào cần</li>
-                      <li>Lắng nghe và tâm sự cùng em</li>
-                      <li>
-                        Cùng em trải qua thật nhiều điều thú vị lẫn khó khăn
-                        phía trước
-                      </li>
-                      <li>Luôn giữ cho nụ cười trên môi em không bị mất đi</li>
-                    </ul>
-                    <p class="letter-tap-hint">Nhấp vào để tiếp tục →</p>
-                  </div>
-                </div>
-              </article>
-
-              <!-- Page 6 -->
-              <article class="letter-page" data-page="6">
-                <div class="letter-page-inner">
-                  <div class="letter-title-box">
-                    Một lần nữa, Happy Birthday! 💗
-                  </div>
+                  <div class="letter-title-box">Final</div>
                   <div class="letter-content letter-content-final">
-                    <div class="letter-final-heart">💗</div>
                     <p>
-                      Cảm ơn em đã là một phần thật quan trọng của cuộc đời anh.
-                      Mặc dù anh hơi khô khan nhưng hy vọng rằng lá thư nhỏ này
-                      sẽ làm em mỉm cười một chút hôm nay nhé.
+                      Xin lỗi món quà này đến hơi muộn vì do vấn đề thời gian và
+                      cũng muốn có sự chỉnh chu nhất nên mong là sẽ không bị
+                      chê. Cảm ơn vì sau tất cả chị vẫn giữ được một suy nghĩ
+                      tích cực về em. May all the good things find their way to
+                      you.
                     </p>
-                    <p class="letter-signature">— Với tất cả tình cảm ♥</p>
+                    <p class="letter-signature">— With all my feelings ♥</p>
                     <p class="letter-done-hint">
                       ✦ Đã đến cuối thư - nhấn back để khám phá tiếp ✦
                     </p>
@@ -394,183 +547,6 @@
               <span class="dot"></span>
               <span class="dot"></span>
               <span class="dot"></span>
-              <span class="dot"></span>
-              <span class="dot"></span>
-            </div>
-          </div>
-        </section>
-
-        <!-- ============================================
-             TAKE CARE VIEW
-        ============================================ -->
-        <section class="takecare-view hidden" id="takecareView">
-          <button class="takecare-back-btn" id="takecareBackBtn">← Back</button>
-
-          <div class="takecare-header">
-            <div class="takecare-heart">🫶</div>
-            <h1 class="takecare-title">Những Điều Em Cần Nhớ</h1>
-            <p class="takecare-subtitle">
-              Nhấp vào mỗi thiệp để xem lời nhắn của anh nhé 💕
-            </p>
-          </div>
-
-          <div class="takecare-grid" id="takecareGrid">
-            <!-- Card 1 -->
-            <div class="flip-card" tabindex="0" aria-label="Uống đủ nước">
-              <div class="flip-card-inner">
-                <div class="flip-card-front">
-                  <div class="flip-icon">💧</div>
-                  <h3>Uống Đủ Nước</h3>
-                  <p>Mỗi ngày 2 lít nhé</p>
-                </div>
-                <div class="flip-card-back">
-                  <h3>💧 Uống Nước</h3>
-                  <p>
-                    Hãy nhớ uống đủ 2 lít nước mỗi ngày em iuu. Đôi mắt em sẽ
-                    luôn sáng, da cũng hồng hào và sức khỏe cũng tốt hơn rất
-                    nhiều. Đừng để anh phải nhắc nhé em ơi!
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="flip-card" tabindex="0" aria-label="Ngủ sớm">
-              <div class="flip-card-inner">
-                <div class="flip-card-front">
-                  <div class="flip-icon">😴</div>
-                  <h3>Ngủ Sớm</h3>
-                  <p>Trước 12 giờ đêm nha</p>
-                </div>
-                <div class="flip-card-back">
-                  <h3>😴 Ngủ Đủ Giấc</h3>
-                  <p>
-                    Đừng thức quá 12h đêm nhiều quá nhé. Mắt em hoạt động cả
-                    ngày mệt lắm rồi. Ngủ sớm để sáng mai thức dậy với một nụ
-                    cười thật tươi xinh! Hẹn gặp em trong giấc mơ ...zzz.zzz 🌙
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="flip-card" tabindex="0" aria-label="Ăn đủ bữa">
-              <div class="flip-card-inner">
-                <div class="flip-card-front">
-                  <div class="flip-icon">🍚</div>
-                  <h3>Ăn Đủ Bữa</h3>
-                  <p>Đừng bỏ qua bữa sáng</p>
-                </div>
-                <div class="flip-card-back">
-                  <h3>🍚 Ăn Uống Khoa Học</h3>
-                  <p>
-                    Dù có bận đến đâu cũng đừng bỏ qua bữa sáng nhé. Thêm rau
-                    xanh, thêm protein, ăn đủ 3 bữa mỗi ngày. Nếu em lười ăn thì
-                    chắc anh phải tự tay đút em ăn đấy! 🥗
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 4 -->
-            <div class="flip-card" tabindex="0" aria-label="Vận động">
-              <div class="flip-card-inner">
-                <div class="flip-card-front">
-                  <div class="flip-icon">🏃‍♀️</div>
-                  <h3>Vận Động</h3>
-                  <p>10 phút mỗi sáng thôi</p>
-                </div>
-                <div class="flip-card-back">
-                  <h3>🏃‍♀️ Vóc Dáng Xinh Đẹp</h3>
-                  <p>
-                    Mỗi ngày nếu được hãy dành ra chỉ 10 phút, đi bộ quanh sân
-                    nhà hay tập một vài động tác yoga cũng được lắm đó nha. Anh
-                    muốn em luôn khỏe mạnh, rạng rỡ và xinh đẹp mãi mãi như bây
-                    giờ em nhá!
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 5 -->
-            <div class="flip-card" tabindex="0" aria-label="Tự tin">
-              <div class="flip-card-inner">
-                <div class="flip-card-front">
-                  <div class="flip-icon">💪</div>
-                  <h3>Tự Tin</h3>
-                  <p>Em thật sự rất tuyệt</p>
-                </div>
-                <div class="flip-card-back">
-                  <h3>💪 Luôn Tự Tin Vào Bản Thân</h3>
-                  <p>
-                    Đừng bao giờ nghi ngờ bản thân em nhé.Anh nghĩ ai cũng có
-                    thế mạnh của riêng mình , và nếu thế mạnh của em là luôn cố
-                    gắng trong mọi việc thì em chỉ cần đủ dũng cảm để đương đầu
-                    . Cứ tự tin đối mặt, bởi vì bên cạnh vẫn có anh - người luôn
-                    tin tưởng em! ✨
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 6 -->
-            <div class="flip-card" tabindex="0" aria-label="Gọi anh khi mệt">
-              <div class="flip-card-inner">
-                <div class="flip-card-front">
-                  <div class="flip-icon">🤗</div>
-                  <h3>Khi Mệt</h3>
-                  <p>Gọi anh, luôn có mặt</p>
-                </div>
-                <div class="flip-card-back">
-                  <h3>🤗 Anh Luôn Lắng Nghe</h3>
-                  <p>
-                    Khi mà em cảm thấy mệt mỏi, bế tắc hay chỉ đơn giản là muốn
-                    tâm sự một chút hay là nhớ anh gì đó, đừng ngại mà gọi cho
-                    anh nhé. Anh sẽ nghe em kể mãi cũng được, không chán đâu.
-                    Yêu iemm 💗
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 7 -->
-            <div class="flip-card" tabindex="0" aria-label="Khi buồn">
-              <div class="flip-card-inner">
-                <div class="flip-card-front">
-                  <div class="flip-icon">🌧️</div>
-                  <h3>Khi Buồn</h3>
-                  <p>Công Chúa Mít Ướt</p>
-                </div>
-                <div class="flip-card-back">
-                  <h3>🌧️ Nước Mắt Của Em</h3>
-                  <p>
-                    Anh biết em rất dễ bị tác động bởi những lời nói tiêu cực.
-                    Nếu em buồn, đừng chịu đựng một mình. Hãy nhắn anh, anh
-                    phóng qua liền!
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 8 -->
-            <div class="flip-card" tabindex="0" aria-label="Anh luôn ở đây">
-              <div class="flip-card-inner">
-                <div class="flip-card-front">
-                  <div class="flip-icon">💗</div>
-                  <h3>Lời Cuối</h3>
-                  <p>Anh luôn ở bên em</p>
-                </div>
-                <div class="flip-card-back">
-                  <h3>💗 Anh Luôn Ở Bên Em</h3>
-                  <p>
-                    Nhắc lại lần cuối hong biết nãy giờ đủ 3 lần chưa ta? Bất kể
-                    chuyện gì xảy ra, có lớn bé thế nào đi nữa thì hãy luôn nhớ
-                    rằng anh luôn đứng ngay bên cạnh em, cùng em chia mọi niềm
-                    vui, mọi nỗi buồn. Cảm ơn em vì đã chấp nhận cho anh bước
-                    vào cuộc đời màu hồng của em . Luv u Foreverr 🫶
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
         </section>
@@ -579,7 +555,9 @@
              THE LAST VIEW — HELLO KITTY CAKE
         ============================================ -->
         <section class="thelast-view hidden" id="thelastView">
-          <button class="thelast-back-btn" id="thelastBackBtn">← Back</button>
+          <button class="thelast-back-btn" id="thelastBackBtn">
+            ← Quay lại
+          </button>
 
           <div class="thelast-hint hidden" id="thelastHint"></div>
 
@@ -656,52 +634,16 @@
             <div class="cut-guide hidden" id="cutGuide"></div>
           </div>
 
-          <!-- Final popup after cut (kept for compatibility, not auto-shown anymore) -->
-          <div class="thelast-modal hidden" id="thelastModal">
-            <div class="thelast-card">
-              <div class="thelast-heart">💗</div>
-              <h1 class="thelast-title">Happy Birthday NgocNhu!</h1>
-              <p class="thelast-line">
-                Chúc mừng sinh nhật lần thứ này và còn rất nhiều lần sau nữa
-              </p>
-              <p class="thelast-line">
-                Dù thời gian có trôi qua thế nào đi nữa
-              </p>
-              <p class="thelast-line">
-                Hy vọng rằng em sẽ luôn hạnh phúc như bây giờ
-              </p>
-              <p class="thelast-line">Luôn xinh đẹp, luôn được yêu thương 💝</p>
-              <p class="thelast-line last-line">
-                Anh yêu em nhiều, mãi bên nhau nhá 💕
-              </p>
-              <button class="thelast-close" id="thelastClose">
-                Cảm ơn anh 💗
-              </button>
-            </div>
-          </div>
-
           <!-- Fireworks canvas -->
           <canvas class="fireworks-canvas hidden" id="fireworksCanvas"></canvas>
 
-          <!-- Final message after fireworks -->
-          <div class="thelast-final hidden" id="thelastFinal">
-            <div class="thelast-final-inner">
-              <div class="thelast-final-hearts">
-                <span>💗</span><span>💝</span><span>💖</span>
-              </div>
-              <h1 class="thelast-final-title">
-                Happy Birthday,<br />Ngọc Như 💕
-              </h1>
-              <p class="thelast-final-line">
-                Chúc em tuổi mới thật nhiều niềm vui
-              </p>
-              <p class="thelast-final-line">
-                Luôn xinh đẹp, luôn được yêu thương
-              </p>
-              <p class="thelast-final-line">Và mãi iu anh nhaa 🫶</p>
-              <p class="thelast-final-sign">— From My Love —</p>
-            </div>
-          </div>
+          <!-- Celebrate Back Button -->
+          <button
+            class="thelast-celebrate-back-btn hidden"
+            id="thelastCelebrateBackBtn"
+          >
+            ← Quay lại
+          </button>
         </section>
 
         <!-- ============================================
@@ -718,9 +660,9 @@
             <div class="galaxy-landing-card">
               <div class="galaxy-landing-heart">💗</div>
               <h1 class="galaxy-landing-title">HAPPY BIRTHDAY</h1>
-              <p class="galaxy-landing-sub">Ngọc Như iuu ✨</p>
+              <p class="galaxy-landing-sub">Hi ✨</p>
               <p class="galaxy-landing-desc">
-                Em có muốn biết vị trí của mình trong tim anh không?...
+                Long có đẹp trai không?  Nhấn "CÓ" để xem quà...
               </p>
               <button class="galaxy-landing-btn" id="galaxyEnterBtn">
                 CÓ ✦
@@ -773,23 +715,22 @@
           var viaHttp = proto === 'http:' || proto === 'https:';
           var why = '';
           if (!viaHttp) {
-            why += '❌ BẠN MỞ BẰNG file://  → TRÌNH DUYỆT CHẶN MODULE LUÔN.\\n';
-            why += '   CÁCH SỬA (bắt buộc cho Gift 3D):\\n';
-            why += '     1. Mở PowerShell vào thư mục project\\n';
+            why += '❌ Bạn đang mở file trực tiếp (file://).\\n';
             why +=
-              '     2. Gõ:  powershell -ExecutionPolicy Bypass -File _server.ps1\\n';
-            why += '     3. Mở trình duyệt:  http://localhost:8080\\n';
-            why += '   (Password + Letter vẫn chạy OK ngay cả file://)\\n';
+              '   Trình duyệt chặn module + ảnh local nên Gift 3D không chạy được.\\n';
+            why += '\\n';
+            why +=
+              '👉 CÁCH CHẠY: nháy đúp file  Chay-Website.bat  rồi vào http://localhost:8080\\n';
+            why +=
+              '   (Password + Letter vẫn xem được khi mở file trực tiếp)\\n';
           } else {
-            why += '⚠ Đã chạy qua HTTP nhưng gift-loader.js VẪN FAIL.\\n';
-            why += '   Nguyên nhân khả dĩ (thử theo thứ tự):\\n';
-            why += '     1. Cache cũ → ấn Ctrl+Shift+R HARD REFRESH.\\n';
             why +=
-              '     2. File vendor/three.module.js hoặc vendor/OrbitControls.js BỊ THIẾU\\n';
+              '⚠ Đã chạy qua HTTP nhưng gift-loader.js vẫn load thất bại.\\n';
+            why += '   1. Nhấn Ctrl+Shift+R để làm mới cứng (xóa cache).\\n';
             why +=
-              '        (Kiểm tra vendor/ có 2 file đó với kích thước > 10KB không)\\n';
+              '   2. Kiểm tra vendor/three.module.js và vendor/OrbitControls.js còn đủ.\\n';
             why +=
-              '     3. Lỗi cú pháp trong gift-loader.js / gift3d.js → mở F12 → Console xem lỗi ĐỎ.\\n';
+              '   3. Mở F12 → Console xem lỗi đỏ trong gift-loader.js / gift3d.js.\\n';
           }
           var b = document.getElementById('debugBanner');
           if (!b) {

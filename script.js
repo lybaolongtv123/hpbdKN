@@ -44,7 +44,7 @@
   // =========================================================
   function run() {
     /* ---------- CONFIG ---------- */
-    var CORRECT_PASSWORD = "2708";
+    var CORRECT_PASSWORD = "0911";
 
     /* ---------- HELPERS ---------- */
     function $(id) {
@@ -86,9 +86,6 @@
     var letterPages = $$(".letter-page");
     var letterProgressDots = $$("#letterProgress .dot");
     var letterBackBtn = $("letterBackBtn");
-    var takecareView = $("takecareView");
-    var takecareBackBtn = $("takecareBackBtn");
-    var takecareFlipCards = $$(".flip-card");
 
     var thelastView = $("thelastView");
     var thelastBackBtn = $("thelastBackBtn");
@@ -104,6 +101,7 @@
     var thelastModal = $("thelastModal");
     var thelastClose = $("thelastClose");
     var thelastFireworks = $("fireworksCanvas");
+    var thelastCelebrateBackBtn = $("thelastCelebrateBackBtn");
     var thelastFinal = $("thelastFinal");
 
     /* ---------- STATE ---------- */
@@ -119,6 +117,12 @@
     var fwRockets = [];
     var fwCtx = null;
     var fwStopTimer = null;
+    var fwAmbientTimer = null;
+    var glowTextures = null;
+    var textParticles = [];
+    var ambientStardust = [];
+    var textStartTime = 0;
+    var pointerPos = { x: -9999, y: -9999, active: false };
     var floatingEnabled = false;
     var floatingTimer = null;
     var audioUnlocked = false;
@@ -435,26 +439,6 @@
       letterCurrentPage = nextIndex;
     }
 
-    /* ---------- TAKE CARE ---------- */
-    function openTakeCareView() {
-      if (!takecareView) return;
-      if (secretContainer) secretContainer.classList.add("hidden");
-      for (var i = 0; i < takecareFlipCards.length; i++) {
-        takecareFlipCards[i].classList.remove("is-flipped");
-      }
-      takecareView.classList.remove("hidden");
-    }
-    function closeTakeCareView() {
-      if (!takecareView) return;
-      if (secretContainer) secretContainer.classList.remove("hidden");
-      takecareView.classList.add("hidden");
-    }
-    function toggleFlipCard(card) {
-      if (!card) return;
-      unlockAudio();
-      card.classList.toggle("is-flipped");
-    }
-
     /* ---------- THE LAST (Cake) ---------- */
     function setTheLastHint(text) {
       if (!thelastHint) return;
@@ -473,6 +457,9 @@
       cutCurrentX = null;
       cutCurrentY = null;
       cutActive = false;
+      if (thelastView) thelastView.classList.remove("celebrating");
+      if (thelastCelebrateBackBtn)
+        thelastCelebrateBackBtn.classList.add("hidden");
       if (thelastCandleFlame) thelastCandleFlame.classList.remove("off");
       if (thelastCandleSmoke) thelastCandleSmoke.classList.remove("on");
       if (thelastKnife) {
@@ -501,15 +488,12 @@
     function openTheLastView() {
       if (!thelastView) return;
       if (secretContainer) secretContainer.classList.add("hidden");
-      closeTakeCareView();
       closeLetterView();
       closeGiftView();
       resetTheLastView();
       thelastView.classList.remove("hidden");
       setTimeout(function () {
-        setTheLastHint(
-          "💫 Ước gì đó đi beiuu — nhấn vào màn hình để thổi nến nhé!",
-        );
+        setTheLastHint("💫 Ước gì đó đi — nhấn vào màn hình để thổi nến nhé!");
       }, 900);
     }
     function closeTheLastView() {
@@ -530,7 +514,7 @@
         thelastPhase = "knife";
         if (thelastCutGuide) thelastCutGuide.classList.remove("hidden");
         if (thelastKnife) thelastKnife.classList.add("show");
-        setTheLastHint("🍴 Vuốt màn hình để cắt một lát bánh nha babeee");
+        setTheLastHint("🍴 Vuốt màn hình để cắt bánh");
       }, 1800);
     }
     function getCutPos(evt) {
@@ -710,7 +694,7 @@
         setTimeout(function () {
           if (thelastCakeWrap) thelastCakeWrap.classList.add("slice-done");
           if (thelastCutGuide) thelastCutGuide.classList.add("hidden");
-          setTheLastHint("🎉 Cảm ơn em! Đây là món quà cuối cùng 💕");
+          setTheLastHint("🎉 Đây là món quà cuối cùng ");
           setTimeout(function () {
             setTheLastHint("");
             startFireworksAndFinal();
@@ -747,7 +731,43 @@
       return { x: fallbackX, y: fallbackY };
     }
 
-    /* ---------- FIREWORKS ENGINE for THE LAST ---------- */
+    /* ---------- FIREWORKS & GLOWING PINK PARTICLE TEXT ENGINE ---------- */
+    function initGlowTextures() {
+      if (glowTextures) return glowTextures;
+      function makeTex(cCore, cMid, cOuter) {
+        var c = document.createElement("canvas");
+        c.width = 48;
+        c.height = 48;
+        var ctx = c.getContext("2d");
+        var g = ctx.createRadialGradient(24, 24, 0, 24, 24, 24);
+        g.addColorStop(0, cCore);
+        g.addColorStop(0.35, cMid);
+        g.addColorStop(0.8, cOuter);
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, 48, 48);
+        return c;
+      }
+      glowTextures = {
+        pink: makeTex(
+          "rgba(255, 210, 235, 0.95)", // Hồng phấn êm dịu, không gắt chói
+          "rgba(255, 105, 175, 0.75)",
+          "rgba(220, 70, 155, 0.16)",
+        ),
+        rose: makeTex(
+          "rgba(255, 230, 242, 0.95)",
+          "rgba(255, 140, 195, 0.7)",
+          "rgba(240, 90, 160, 0.14)",
+        ),
+        gold: makeTex(
+          "rgba(255, 242, 215, 0.92)",
+          "rgba(255, 195, 120, 0.7)",
+          "rgba(240, 150, 60, 0.14)",
+        ),
+      };
+      return glowTextures;
+    }
+
     function resizeFireworksCanvas() {
       if (!thelastFireworks) return;
       var dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
@@ -760,44 +780,52 @@
         fwCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
     }
+
     function fwRand(min, max) {
       return Math.random() * (max - min) + min;
     }
+
     function fwColor() {
       var palette = [
-        [255, 120, 170],
-        [255, 180, 220],
-        [255, 210, 120],
-        [180, 220, 255],
-        [200, 140, 255],
-        [255, 150, 150],
-        [140, 255, 210],
-        [255, 230, 140],
+        [255, 60, 160], // neon pink
+        [255, 120, 205], // soft pink
+        [255, 180, 235], // pastel pink
+        [225, 75, 255], // cosmic purple
+        [255, 215, 110], // golden star
+        [255, 90, 145], // warm rose
+        [185, 220, 255], // soft blue-violet
+        [255, 240, 190], // champagne gold
       ];
       return palette[(Math.random() * palette.length) | 0];
     }
-    function launchRocket() {
+
+    function launchRocket(customX, customY, targetY) {
       if (!thelastFireworks) return;
       var w = thelastFireworks.clientWidth || window.innerWidth;
       var h = thelastFireworks.clientHeight || window.innerHeight;
+      var startX = customX !== undefined ? customX : fwRand(w * 0.12, w * 0.88);
+      var endY = targetY !== undefined ? targetY : fwRand(h * 0.14, h * 0.38);
+      var speedY = fwRand(-10.5, -8.2);
       fwRockets.push({
-        x: fwRand(w * 0.15, w * 0.85),
-        y: h,
-        vx: fwRand(-0.8, 0.8),
-        vy: fwRand(-8.5, -6.2),
-        ay: 0.14,
+        x: startX,
+        y: customY !== undefined ? customY : h,
+        targetY: endY,
+        vx: fwRand(-0.6, 0.6),
+        vy: speedY,
+        ay: 0.13,
         life: 1,
         color: fwColor(),
-        trailY: h,
+        trailY: customY !== undefined ? customY : h,
       });
     }
+
     function explodeRocket(r) {
-      var count = 60 + ((Math.random() * 40) | 0);
+      var count = 65 + ((Math.random() * 45) | 0);
       var baseColor = r.color;
-      var hueShift = Math.random() < 0.3;
+      var hueShift = Math.random() < 0.35;
       for (var i = 0; i < count; i++) {
-        var ang = (Math.PI * 2 * i) / count + fwRand(-0.05, 0.05);
-        var speed = fwRand(2.2, 6.0);
+        var ang = (Math.PI * 2 * i) / count + fwRand(-0.06, 0.06);
+        var speed = fwRand(2.0, 6.2);
         var col = hueShift ? fwColor() : baseColor;
         fwParticles.push({
           x: r.x,
@@ -806,61 +834,219 @@
           vy: Math.sin(ang) * speed,
           life: 1,
           decay: fwRand(0.012, 0.022),
-          size: fwRand(1.6, 3.2),
+          size: fwRand(1.8, 3.4),
           color: col,
-          gravity: 0.05,
+          gravity: 0.045,
         });
       }
-      var sparkleCount = 20 + ((Math.random() * 15) | 0);
+      var sparkleCount = 22 + ((Math.random() * 16) | 0);
       for (var j = 0; j < sparkleCount; j++) {
         var sang = fwRand(0, Math.PI * 2);
-        var sspeed = fwRand(0.6, 2.0);
+        var sspeed = fwRand(0.6, 2.2);
         fwParticles.push({
           x: r.x,
           y: r.y,
           vx: Math.cos(sang) * sspeed,
           vy: Math.sin(sang) * sspeed,
           life: 1,
-          decay: fwRand(0.02, 0.035),
-          size: fwRand(0.8, 1.6),
-          color: [255, 255, 220],
+          decay: fwRand(0.018, 0.032),
+          size: fwRand(0.9, 1.8),
+          color: [255, 255, 230],
           gravity: 0.02,
           sparkle: true,
         });
       }
     }
+
+    /* Tạo vị trí các hạt tạo thành chữ "HAPPY BIRTHDAY" màu hồng */
+    function createTextParticles(w, h) {
+      textParticles = [];
+      var textures = initGlowTextures();
+      var offCanvas = document.createElement("canvas");
+      offCanvas.width = w;
+      offCanvas.height = h;
+      var offCtx = offCanvas.getContext("2d");
+      if (!offCtx) return;
+
+      var isMobile = w < 680;
+      offCtx.textAlign = "center";
+      offCtx.textBaseline = "middle";
+      offCtx.fillStyle = "#ffffff";
+
+      var centerY = h * 0.44;
+
+      if (!isMobile) {
+        var fsMain = Math.min(74, Math.max(50, Math.floor(w * 0.058)));
+        var fsSub = Math.min(36, Math.max(24, Math.floor(w * 0.028)));
+
+        // Dùng font 900 đậm nét giúp chữ đặc hạt, rõ mồn một từng nét chữ
+        offCtx.font =
+          "900 " +
+          fsMain +
+          "px 'Montserrat', 'Arial Black', -apple-system, sans-serif";
+        offCtx.fillText("HAPPY BIRTHDAY", w * 0.5, centerY - fsMain * 0.4);
+
+        offCtx.font =
+          "bold " +
+          fsSub +
+          "px 'Montserrat', 'Dancing Script', -apple-system, sans-serif";
+        offCtx.fillText("✨  Kim Ngân  ✨", w * 0.5, centerY + fsMain * 0.72);
+      } else {
+        var fsWord = Math.min(56, Math.max(40, Math.floor(w * 0.125)));
+        var fsSubMob = Math.min(28, Math.max(20, Math.floor(w * 0.062)));
+
+        offCtx.font =
+          "900 " +
+          fsWord +
+          "px 'Montserrat', 'Arial Black', -apple-system, sans-serif";
+        offCtx.fillText("HAPPY", w * 0.5, centerY - fsWord * 1.15);
+        offCtx.fillText("BIRTHDAY", w * 0.5, centerY + fsWord * 0.02);
+
+        offCtx.font =
+          "bold " +
+          fsSubMob +
+          "px 'Montserrat', 'Dancing Script', -apple-system, sans-serif";
+        offCtx.fillText("✨  Kim Ngân ✨", w * 0.5, centerY + fsWord * 1.18);
+      }
+
+      var imgData = offCtx.getImageData(0, 0, w, h).data;
+      var step = isMobile ? 4.5 : 5.2;
+      var maxParticles = isMobile ? 420 : 580;
+
+      for (var y = 0; y < h; y += step) {
+        if (textParticles.length >= maxParticles) break;
+        for (var x = 0; x < w; x += step) {
+          if (textParticles.length >= maxParticles) break;
+          var px = Math.floor(x);
+          var py = Math.floor(y);
+          var idx = (py * w + px) * 4;
+          if (imgData[idx + 3] > 60) {
+            var rVal = Math.random();
+            var tex = textures.pink;
+            if (rVal < 0.35) tex = textures.rose;
+            else if (rVal < 0.48) tex = textures.gold;
+
+            var angle = Math.random() * Math.PI * 2;
+            var dist = Math.random() * Math.max(w, h) * 0.48 + 100;
+            var originX = w * 0.5 + Math.cos(angle) * dist;
+            var originY = h * 0.4 + Math.sin(angle) * dist;
+
+            textParticles.push({
+              x: originX,
+              y: originY,
+              originX: originX,
+              originY: originY,
+              targetX: px,
+              targetY: py,
+              size: (Math.random() * 1.4 + 2.0) * (isMobile ? 0.9 : 1.05),
+              tex: tex,
+              delay: Math.random() * 0.9,
+              duration: 1.3 + Math.random() * 0.4,
+              phase: Math.random() * Math.PI * 2,
+              floatSpeed: 0.5 + Math.random() * 0.5,
+              twinkleSpeed: 1.0 + Math.random() * 1.4,
+              floatAmpX: 0.3 + Math.random() * 0.5,
+              floatAmpY: 0.4 + Math.random() * 0.6,
+              sparkleInterval: 3.5 + Math.random() * 5,
+              lastSparkle: Math.random() * 3,
+            });
+          }
+        }
+      }
+    }
+
+    function createAmbientStardust(w, h) {
+      ambientStardust = [];
+      var textures = initGlowTextures();
+      var count = Math.min(48, Math.floor(w * 0.05));
+      for (var i = 0; i < count; i++) {
+        ambientStardust.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          size: Math.random() * 2.8 + 1.2,
+          speedY: -(Math.random() * 0.32 + 0.12),
+          speedX: (Math.random() - 0.5) * 0.18,
+          phase: Math.random() * Math.PI * 2,
+          tex: Math.random() < 0.7 ? textures.pink : textures.gold,
+        });
+      }
+    }
+
+    function drawStarSparkle(ctx, x, y, size, opacity) {
+      ctx.save();
+      ctx.globalAlpha = opacity;
+      ctx.fillStyle = "#ffffff";
+      ctx.shadowColor = "#ff7bc8";
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.ellipse(x, y, size * 2.4, size * 0.45, 0, 0, Math.PI * 2);
+      ctx.ellipse(x, y, size * 0.45, size * 2.4, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
     function fwStep() {
       if (!fwCtx || !thelastFireworks) return;
       var w = thelastFireworks.clientWidth || window.innerWidth;
       var h = thelastFireworks.clientHeight || window.innerHeight;
+      var now = performance.now() * 0.001;
+      var elapsedSinceText = textStartTime > 0 ? now - textStartTime : 0;
+
+      // Xóa mờ nhẹ tạo vệt đuôi pháo hoa và quầng sáng ngân hà
       fwCtx.globalCompositeOperation = "source-over";
-      fwCtx.fillStyle = "rgba(10, 4, 20, 0.18)";
+      fwCtx.fillStyle = "rgba(7, 1, 14, 0.22)";
       fwCtx.fillRect(0, 0, w, h);
+
       fwCtx.globalCompositeOperation = "lighter";
+
+      // 1. Vẽ bụi sao trôi nổi (Ambient Stardust)
+      for (var s = 0; s < ambientStardust.length; s++) {
+        var sd = ambientStardust[s];
+        sd.y += sd.speedY;
+        sd.x += sd.speedX + Math.sin(now * 0.8 + sd.phase) * 0.15;
+        if (sd.y < -10) {
+          sd.y = h + 10;
+          sd.x = Math.random() * w;
+        }
+        var sAlpha = 0.45 + Math.sin(now * 1.4 + sd.phase) * 0.3;
+        fwCtx.globalAlpha = Math.max(0.1, Math.min(1, sAlpha));
+        fwCtx.drawImage(
+          sd.tex,
+          sd.x - sd.size,
+          sd.y - sd.size,
+          sd.size * 2,
+          sd.size * 2,
+        );
+      }
+
+      // 2. Vẽ pháo hoa Rockets
       var i = fwRockets.length;
       while (i--) {
         var r = fwRockets[i];
         r.x += r.vx;
         r.y += r.vy;
         r.vy += r.ay;
-        if (r.vy >= -1.2 || r.y <= h * 0.32) {
+        if (r.vy >= -1.2 || r.y <= (r.targetY || h * 0.32)) {
           explodeRocket(r);
           fwRockets.splice(i, 1);
           continue;
         }
         fwCtx.beginPath();
         fwCtx.strokeStyle =
-          "rgba(" + r.color[0] + "," + r.color[1] + "," + r.color[2] + ",0.9)";
-        fwCtx.lineWidth = 2.2;
+          "rgba(" + r.color[0] + "," + r.color[1] + "," + r.color[2] + ",0.92)";
+        fwCtx.lineWidth = 2.4;
         fwCtx.moveTo(r.x, r.trailY);
         fwCtx.lineTo(r.x, r.y + 6);
         fwCtx.stroke();
         r.trailY = r.y;
+
         fwCtx.beginPath();
-        fwCtx.fillStyle = "rgba(255,240,200," + fwRand(0.6, 1) + ")";
-        fwCtx.arc(r.x, r.y, 2.2, 0, Math.PI * 2);
+        fwCtx.fillStyle = "rgba(255,245,210," + fwRand(0.7, 1) + ")";
+        fwCtx.arc(r.x, r.y, 2.4, 0, Math.PI * 2);
         fwCtx.fill();
       }
+
+      // 3. Vẽ pháo hoa Particles
       var j = fwParticles.length;
       while (j--) {
         var p = fwParticles[j];
@@ -890,39 +1076,181 @@
         fwCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         fwCtx.fill();
       }
+
+      // 4. Vẽ chữ hạt sáng "HAPPY BIRTHDAY"
+      var isMobileScreen = w < 680;
+      var textCenterY = h * 0.44;
+
+      // Nền chữ hồng mờ dịu mắt (không dùng shadowBlur để đảm bảo 60 FPS mượt mà)
+      if (elapsedSinceText > 1.4) {
+        var glowFade = Math.min(1, (elapsedSinceText - 1.4) / 0.8);
+        fwCtx.save();
+        fwCtx.globalAlpha = 0.18 * glowFade;
+        fwCtx.textAlign = "center";
+        fwCtx.textBaseline = "middle";
+        fwCtx.fillStyle = "#ff75b5";
+
+        if (!isMobileScreen) {
+          var fsM = Math.min(72, Math.max(48, Math.floor(w * 0.056)));
+          var fsS = Math.min(34, Math.max(22, Math.floor(w * 0.026)));
+          fwCtx.font =
+            "900 " +
+            fsM +
+            "px 'Montserrat', 'Arial Black', -apple-system, sans-serif";
+          fwCtx.fillText("HAPPY BIRTHDAY", w * 0.5, textCenterY - fsM * 0.4);
+          fwCtx.font =
+            "bold " +
+            fsS +
+            "px 'Montserrat', 'Dancing Script', -apple-system, sans-serif";
+          fwCtx.fillText("✨  Kim Ngân  ✨", w * 0.5, textCenterY + fsM * 0.72);
+        } else {
+          var fsW = Math.min(54, Math.max(38, Math.floor(w * 0.12)));
+          var fsSM = Math.min(26, Math.max(18, Math.floor(w * 0.058)));
+          fwCtx.font =
+            "900 " +
+            fsW +
+            "px 'Montserrat', 'Arial Black', -apple-system, sans-serif";
+          fwCtx.fillText("HAPPY", w * 0.5, textCenterY - fsW * 1.15);
+          fwCtx.fillText("BIRTHDAY", w * 0.5, textCenterY + fsW * 0.02);
+          fwCtx.font =
+            "bold " +
+            fsSM +
+            "px 'Montserrat', 'Dancing Script', -apple-system, sans-serif";
+          fwCtx.fillText("✨  Kim Ngân  ✨", w * 0.5, textCenterY + fsW * 1.18);
+        }
+        fwCtx.restore();
+      }
+
+      var pLen = textParticles.length;
+      for (var k = 0; k < pLen; k++) {
+        var tp = textParticles[k];
+        var pTime = elapsedSinceText - tp.delay;
+        if (pTime < 0) continue;
+
+        var currX, currY;
+        if (pTime < tp.duration) {
+          var progress = pTime / tp.duration;
+          var tProg = 1 - Math.pow(1 - progress, 3);
+          var wave = Math.sin(progress * Math.PI) * 20;
+          currX =
+            tp.originX +
+            (tp.targetX - tp.originX) * tProg +
+            Math.cos(tp.phase) * wave;
+          currY =
+            tp.originY +
+            (tp.targetY - tp.originY) * tProg +
+            Math.sin(tp.phase) * wave;
+        } else {
+          var floatX = Math.sin(now * tp.floatSpeed + tp.phase) * tp.floatAmpX;
+          var floatY =
+            Math.cos(now * tp.floatSpeed * 0.85 + tp.phase) * tp.floatAmpY;
+          currX = tp.targetX + floatX;
+          currY = tp.targetY + floatY;
+
+          if (pointerPos.active) {
+            var dx = currX - pointerPos.x;
+            var dy = currY - pointerPos.y;
+            var distSq = dx * dx + dy * dy;
+            var minDist = 65;
+            if (distSq < minDist * minDist && distSq > 0) {
+              var dist = Math.sqrt(distSq);
+              var push = (1 - dist / minDist) * 35;
+              currX += (dx / dist) * push;
+              currY += (dy / dist) * push;
+            }
+          }
+        }
+
+        var tAlpha = 0.58 + Math.sin(now * tp.twinkleSpeed + tp.phase) * 0.16;
+        fwCtx.globalAlpha = Math.max(0.35, Math.min(0.82, tAlpha));
+
+        var drawSize = tp.size * (0.95 + Math.sin(now * 1.6 + tp.phase) * 0.08);
+        fwCtx.drawImage(
+          tp.tex,
+          currX - drawSize * 1.1,
+          currY - drawSize * 1.1,
+          drawSize * 2.2,
+          drawSize * 2.2,
+        );
+
+        if (pTime >= tp.duration && now - tp.lastSparkle > tp.sparkleInterval) {
+          var sparkAge = now - tp.lastSparkle - tp.sparkleInterval;
+          if (sparkAge < 0.5) {
+            var sparkAlpha = Math.sin((sparkAge / 0.5) * Math.PI) * 0.6;
+            drawStarSparkle(fwCtx, currX, currY, drawSize * 1.1, sparkAlpha);
+          } else if (sparkAge > 0.7) {
+            tp.lastSparkle = now;
+            tp.sparkleInterval = 4.0 + Math.random() * 6;
+          }
+        }
+      }
+
+      fwCtx.globalAlpha = 1;
     }
+
     function fwLoop() {
       fwStep();
       fwRaf = requestAnimationFrame(fwLoop);
     }
+
     function startFireworksAndFinal() {
       if (!thelastFireworks) return;
       stopFireworks();
       thelastFireworks.classList.remove("hidden");
+      if (thelastView) thelastView.classList.add("celebrating");
       resizeFireworksCanvas();
+
+      var w = thelastFireworks.clientWidth || window.innerWidth;
+      var h = thelastFireworks.clientHeight || window.innerHeight;
+
+      textStartTime = performance.now() * 0.001;
+      createTextParticles(w, h);
+      createAmbientStardust(w, h);
+
       fwRockets.length = 0;
       fwParticles.length = 0;
-      launchRocket();
-      launchRocket();
-      var count = 0;
-      fwStopTimer = setInterval(function () {
-        var burst = 1 + ((Math.random() * 2) | 0);
-        for (var i = 0; i < burst; i++) launchRocket();
-        count++;
-        if (count >= 7) {
-          clearInterval(fwStopTimer);
-          fwStopTimer = null;
+      launchRocket(w * 0.25, h, h * 0.26);
+      launchRocket(w * 0.75, h, h * 0.26);
+
+      var introCount = 0;
+      var introTimer = setInterval(function () {
+        var sideX =
+          introCount % 2 === 0
+            ? fwRand(w * 0.12, w * 0.35)
+            : fwRand(w * 0.65, w * 0.88);
+        launchRocket(sideX, h, fwRand(h * 0.16, h * 0.36));
+        introCount++;
+        if (introCount >= 5) {
+          clearInterval(introTimer);
         }
-      }, 650);
+      }, 700);
+
       fwLoop();
+
+      // Duy trì pháo hoa ở chế độ nền liên tục
+      fwAmbientTimer = setInterval(function () {
+        if (!thelastFireworks || thelastFireworks.classList.contains("hidden"))
+          return;
+        var rX =
+          Math.random() < 0.5
+            ? fwRand(w * 0.08, w * 0.32)
+            : fwRand(w * 0.68, w * 0.92);
+        launchRocket(rX, h, fwRand(h * 0.14, h * 0.38));
+      }, 1900);
+
+      // Hiển thị nút Quay lại nhẹ nhàng sau khi chữ hạt sáng tụ hội
       setTimeout(function () {
-        if (thelastFinal) thelastFinal.classList.add("show");
-      }, 3200);
-      setTimeout(function () {
-        stopFireworks(true);
-      }, 9500);
+        if (
+          thelastCelebrateBackBtn &&
+          thelastView &&
+          thelastView.classList.contains("celebrating")
+        ) {
+          thelastCelebrateBackBtn.classList.remove("hidden");
+        }
+      }, 2200);
     }
-    function stopFireworks(keepFinal) {
+
+    function stopFireworks() {
       if (fwRaf) {
         cancelAnimationFrame(fwRaf);
         fwRaf = null;
@@ -931,9 +1259,20 @@
         clearInterval(fwStopTimer);
         fwStopTimer = null;
       }
+      if (fwAmbientTimer) {
+        clearInterval(fwAmbientTimer);
+        fwAmbientTimer = null;
+      }
       fwRockets.length = 0;
       fwParticles.length = 0;
+      textParticles.length = 0;
+      ambientStardust.length = 0;
+      textStartTime = 0;
+      pointerPos.active = false;
       if (thelastFireworks) thelastFireworks.classList.add("hidden");
+      if (thelastView) thelastView.classList.remove("celebrating");
+      if (thelastCelebrateBackBtn)
+        thelastCelebrateBackBtn.classList.add("hidden");
       if (fwCtx) {
         try {
           var w = thelastFireworks ? thelastFireworks.clientWidth || 0 : 0;
@@ -941,13 +1280,50 @@
           fwCtx.clearRect(0, 0, w, h);
         } catch (e) {}
       }
-      if (!keepFinal && thelastFinal) thelastFinal.classList.remove("show");
+      if (thelastFinal) thelastFinal.classList.remove("show");
     }
+
     window.addEventListener("resize", function () {
       if (thelastFireworks && !thelastFireworks.classList.contains("hidden")) {
         resizeFireworksCanvas();
+        var w = thelastFireworks.clientWidth || window.innerWidth;
+        var h = thelastFireworks.clientHeight || window.innerHeight;
+        createTextParticles(w, h);
+        createAmbientStardust(w, h);
       }
     });
+
+    if (thelastFireworks) {
+      thelastFireworks.addEventListener("pointerdown", function (e) {
+        var rect = thelastFireworks.getBoundingClientRect();
+        var cx = e.clientX - rect.left;
+        var cy = e.clientY - rect.top;
+        pointerPos.x = cx;
+        pointerPos.y = cy;
+        pointerPos.active = true;
+        launchRocket(
+          cx,
+          thelastFireworks.clientHeight || window.innerHeight,
+          cy,
+        );
+      });
+      thelastFireworks.addEventListener("pointermove", function (e) {
+        var rect = thelastFireworks.getBoundingClientRect();
+        pointerPos.x = e.clientX - rect.left;
+        pointerPos.y = e.clientY - rect.top;
+        pointerPos.active = true;
+      });
+      thelastFireworks.addEventListener("pointerup", function () {
+        pointerPos.active = false;
+        pointerPos.x = -9999;
+        pointerPos.y = -9999;
+      });
+      thelastFireworks.addEventListener("pointercancel", function () {
+        pointerPos.active = false;
+        pointerPos.x = -9999;
+        pointerPos.y = -9999;
+      });
+    }
 
     /* ---------- GIFT (bridge — gift-loader.js sẽ gán vào window.__openGift) ---------- */
     function isHttp() {
@@ -971,20 +1347,18 @@
         hint.classList.remove("hidden");
         if (!isHttp()) {
           hint.innerHTML =
-            "⚠ BẠN ĐANG MỞ FILE TRỰC TIẾP (file://) — Gift 3D KHÔNG CHẠY.<br>" +
-            "Hãy chạy HTTP server rồi mở <b>http://localhost:8080</b>:<br>" +
-            "1) Mở PowerShell vào thư mục project<br>" +
-            "2) Gõ lệnh: <code>powershell -File _server.ps1</code><br>" +
-            "3) Mở trình duyệt vào <code>http://localhost:8080</code><br>" +
+            "⚠ Bạn đang mở file trực tiếp (file://) — Gift 3D không chạy được.<br>" +
+            "Trình duyệt chặn module và chặn đọc ảnh local.<br>" +
+            "👉 Hãy nháy đúp file <code>Chay-Website.bat</code> rồi mở " +
+            "<b>http://localhost:8080</b><br>" +
             "(Password & Letter vẫn chạy OK, chỉ Gift cần HTTP thôi)";
         } else {
           hint.innerHTML =
-            "⚠ Gift Module chưa load (đã ở localhost rồi!).<br>" +
-            "Lý do có thể:<br>" +
-            "&nbsp;•&nbsp; Mất mạng: không tải được three.js CDN (unpkg.com)<br>" +
-            "&nbsp;•&nbsp; File gift3d.js / gift-loader.js bị thiếu hoặc lỗi syntax<br>" +
-            "&nbsp;•&nbsp; Cache cũ — nhấn <b>Ctrl + Shift + R</b> làm mới cứng<br>" +
-            "Hãy mở DevTools (F12) → tab Console xem lỗi chi tiết.";
+            "⚠ Gift module chưa load (đã chạy qua HTTP rồi!).<br>" +
+            "Thử theo thứ tự:<br>" +
+            "&nbsp;•&nbsp; Nhấn <b>Ctrl + Shift + R</b> để làm mới cứng<br>" +
+            "&nbsp;•&nbsp; Kiểm tra vendor/three.module.js và vendor/OrbitControls.js còn đủ<br>" +
+            "&nbsp;•&nbsp; Mở DevTools (F12) → Console xem lỗi chi tiết<br>";
         }
         hint.style.fontSize = "12px";
         hint.style.lineHeight = "1.6";
@@ -1009,10 +1383,6 @@
         return letterView;
       },
       closeLetterViewQuiet: closeLetterView,
-      getTakeCareView: function () {
-        return takecareView;
-      },
-      closeTakeCareViewQuiet: closeTakeCareView,
       getTheLastView: function () {
         return thelastView;
       },
@@ -1032,7 +1402,7 @@
       deleteButton.addEventListener("click", deleteNumber);
     }
 
-    // Global keydown (PRIORITY: gift -> thelast -> takecare -> letter -> password)
+    // Global keydown (PRIORITY: gift -> thelast -> letter -> password)
     document.addEventListener("keydown", function (evt) {
       var giftView = $("giftView");
       // GIFT (nếu có module gift-loader.js)
@@ -1054,11 +1424,6 @@
       if (thelastView && !thelastView.classList.contains("hidden")) {
         if (evt.key === "Escape") {
           evt.preventDefault();
-          if (thelastFinal && thelastFinal.classList.contains("show")) {
-            thelastFinal.classList.remove("show");
-            stopFireworks(true);
-            return;
-          }
           closeTheLastView();
           return;
         }
@@ -1077,7 +1442,7 @@
             setTimeout(function () {
               if (thelastCakeWrap) thelastCakeWrap.classList.add("slice-done");
               if (thelastCutGuide) thelastCutGuide.classList.add("hidden");
-              setTheLastHint("🎉 Cảm ơn em! Đây là món quà cuối cùng 💕");
+              setTheLastHint("🎉 Đây là món quà cuối cùng 💕");
               setTimeout(function () {
                 setTheLastHint("");
                 startFireworksAndFinal();
@@ -1089,26 +1454,6 @@
             thelastFinal.classList.remove("show");
             stopFireworks(true);
           }
-          return;
-        }
-        return;
-      }
-      // TAKE CARE
-      if (takecareView && !takecareView.classList.contains("hidden")) {
-        if (evt.key === "Escape") {
-          evt.preventDefault();
-          closeTakeCareView();
-          return;
-        }
-        var active = document.activeElement;
-        if (
-          active &&
-          active.classList &&
-          active.classList.contains("flip-card") &&
-          (evt.key === "Enter" || evt.key === " ")
-        ) {
-          evt.preventDefault();
-          toggleFlipCard(active);
           return;
         }
         return;
@@ -1155,7 +1500,6 @@
         } catch (e) {}
         musicStarted = false;
         closeLetterView();
-        closeTakeCareView();
         closeTheLastView();
         closeGiftView();
         if (secretScreen) secretScreen.classList.add("hidden");
@@ -1172,7 +1516,6 @@
           unlockAudio();
           var page = it.getAttribute("data-page");
           if (page === "letter") openLetterView();
-          else if (page === "takecare") openTakeCareView();
           else if (page === "thelast") openTheLastView();
           else if (page === "gift") openGiftView();
         });
@@ -1187,32 +1530,15 @@
       });
     }
 
-    // Take Care back
-    if (takecareBackBtn) {
-      takecareBackBtn.addEventListener("click", function () {
-        unlockAudio();
-        closeTakeCareView();
-      });
-    }
-
-    // Take Care flip cards (click + Enter/Space)
-    for (var fc = 0; fc < takecareFlipCards.length; fc++) {
-      (function (card) {
-        card.addEventListener("click", function () {
-          toggleFlipCard(card);
-        });
-        card.addEventListener("keydown", function (e) {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            toggleFlipCard(card);
-          }
-        });
-      })(takecareFlipCards[fc]);
-    }
-
     // The Last Back button
     if (thelastBackBtn) {
       thelastBackBtn.addEventListener("click", function () {
+        unlockAudio();
+        closeTheLastView();
+      });
+    }
+    if (thelastCelebrateBackBtn) {
+      thelastCelebrateBackBtn.addEventListener("click", function () {
         unlockAudio();
         closeTheLastView();
       });
@@ -1292,6 +1618,6 @@
     // Đăng ký global "bất kỳ tương tác nào cũng start nhạc nếu đang bị autoplay chặn"
     // (Fix âm thanh không chạy trên VS Code Live Server / localhost port lạ)
 
-    showOk("✓ Mật khẩu là 4 số của ngày, tháng sinh của em nha babeee 💕");
+    showOk("✓ Mật khẩu là 4 số của ngày, tháng sinh của nha ");
   }
 })();

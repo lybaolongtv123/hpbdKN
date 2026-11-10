@@ -1,15 +1,17 @@
 $ErrorActionPreference = 'Stop'
+$root = if ($PSScriptRoot) { $PSScriptRoot } else { (Get-Location).Path }
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add('http://localhost:8080/')
 $listener.Start()
 Write-Host 'Server started at http://localhost:8080/' -ForegroundColor Green
+Write-Host "Serving from: $root" -ForegroundColor Cyan
 while ($listener.IsListening) {
   $ctx = $listener.GetContext()
   $req = $ctx.Request
   $res = $ctx.Response
   $path = $req.Url.LocalPath
   if ($path -eq '/') { $path = '/index.html' }
-  $file = Join-Path 'c:\testwweb' $path.TrimStart('/')
+  $file = Join-Path $root $path.TrimStart('/')
   if (Test-Path $file -PathType Leaf) {
     $ext = [System.IO.Path]::GetExtension($file).ToLower()
     $mime = switch ($ext) {
